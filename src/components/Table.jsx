@@ -1,4 +1,25 @@
 import React, { useEffect, useState } from "react"
+import styled from 'styled-components'
+
+const MyTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`
+const TableWrapper = styled.div`
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow-x: auto;
+`
+const Th = styled.th`
+  border: 1px solid #ccc;
+  padding: 8px;
+`;
+
+const Td = styled.td`
+  border: 1px solid #ccc;
+  padding: 8px;
+`
 
 const Table = () => {
     const [users, setUsers] = useState([])
@@ -27,6 +48,9 @@ const Table = () => {
             //desc
             url = `https://dummyjson.com/users?sortBy=${sortParametr}&order=desc`
             break
+            default: 
+                url = `https://dummyjson.com/users`
+                break
         }
         
         try{
@@ -55,7 +79,6 @@ const Table = () => {
             const data = await response.json()
             setLoading(false)
             setUsers(data.users)
-            console.log(data.users)
         } catch (error){
             console.log(`Failed to complete the request: ${error.message}`)
         }
@@ -66,36 +89,39 @@ const Table = () => {
     }, [])
 
     return (
-        <table className = 'table without style'> 
-            <thead>
-                <tr>
-                    <th onClick = {() => sortHandler('lastName')} >Фамилия</th>
-                    <th onClick = {() => sortHandler('firstName')}>Имя</th>
-                    <th onClick = {() => sortHandler('middleName')}>Отчество</th>
-                    <th onClick = {() => sortHandler('age')}>Возраст</th>
-                    <th onClick = {() => sortHandler('gender')}>Пол</th>
-                    <th onClick = {() => sortHandler('phone')}>Номер телефона</th>
-                    <th>Email</th>
-                    <th>Страна</th>
-                    <th>Город</th>
-                </tr>
-            </thead>
-            <tbody>
-                {users.map(user => (
-                    <tr key={user.id}>
-                        <td>{user.lastName}</td>
-                        <td>{user.firstName}</td>
-                        <td>{user.middleName}</td>
-                        <td>{user.age}</td>
-                        <td>{user.gender}</td>
-                        <td>{user.phone}</td>
-                        <td>{user.email}</td>
-                        <td>{user.address.country}</td>
-                        <td>{user.address.city}</td>
+        <TableWrapper>
+            <MyTable> 
+                <thead>
+                    <tr>
+                        <Th onClick = {() => sortHandler('lastName')} >Фамилия</Th>
+                        <Th onClick = {() => sortHandler('firstName')}>Имя</Th>
+                        <Th onClick = {() => sortHandler('middleName')}>Отчество</Th>
+                        <Th onClick = {() => sortHandler('age')}>Возраст</Th>
+                        <Th onClick = {() => sortHandler('gender')}>Пол</Th>
+                        <Th onClick = {() => sortHandler('phone')}>Номер телефона</Th>
+                        <Th>Email</Th>
+                        <Th>Страна</Th>
+                        <Th>Город</Th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {users.map(user => (
+                        <tr key={user.id}>
+                            <Td>{user.lastName}</Td>
+                            <Td>{user.firstName}</Td>
+                            <Td>{user.middleName}</Td>
+                            <Td>{user.age}</Td>
+                            <Td>{user.gender}</Td>
+                            <Td>{user.phone}</Td>
+                            <Td>{user.email}</Td>
+                            <Td>{user.address.country}</Td>
+                            <Td>{user.address.city}</Td>
+                        </tr>
+                    ))}
+                </tbody>
+            </MyTable>
+        </TableWrapper>
+        
     )
 
 }
