@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react"
 import styled from 'styled-components'
 
+//нудно понять, куда запихивать modalWindow
+
+
 const MyTable = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -21,7 +24,7 @@ const Td = styled.td`
   padding: 8px;
 `
 
-const Table = () => {
+const Table = ({hadleWindow}) => {
     const [users, setUsers] = useState([])
     const [isLoading, setLoading] = useState(false)
     const [sortConfig, setSortConfig] = useState({sortByfirstName: 1, 
@@ -106,7 +109,7 @@ const Table = () => {
                 </thead>
                 <tbody>
                     {users.map(user => (
-                        <tr key={user.id}>
+                        <tr key={user.id} onClick = {() => hadleWindow(user)}>
                             <Td>{user.lastName}</Td>
                             <Td>{user.firstName}</Td>
                             <Td>{user.middleName}</Td>
@@ -120,10 +123,8 @@ const Table = () => {
                     ))}
                 </tbody>
             </MyTable>
-        </TableWrapper>
-        
+        </TableWrapper>   
     )
-
 }
 
 export default Table
