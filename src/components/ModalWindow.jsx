@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactModal from "react-modal";
 import close from './close.png'
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedUser, setOpenWindow } from "../slices/modalWindowSlice";
 
 const CloseButton = styled.button`
   position: absolute;
@@ -86,8 +88,14 @@ const DetailValue = styled.span`
   font-weight: 500;
 `;
 
-const ModalWindow = ({isOpen, onClose, user}) => {
-
+const ModalWindow = () => {
+  const dispatch = useDispatch()
+  const selectedUser = useSelector(state => state.modalWindow.selectedUser)
+  const isOpen = useSelector(state => state.modalWindow.isOpen)
+  const onClose = () => {
+    dispatch(setSelectedUser(null));
+    dispatch(setOpenWindow(false));
+  }
     return (
             <ReactModal isOpen ={isOpen} style={{
                 overlay: {position: 'fixed',
@@ -110,7 +118,7 @@ const ModalWindow = ({isOpen, onClose, user}) => {
                         outline: 'none',
                         }
                 }}>
-                    {user? <ModalContainer>
+                    {selectedUser? <ModalContainer>
                         <ModalHeader>
                             <h3>Профиль пользователя</h3>
                             <CloseButton onClick={onClose}>
@@ -119,44 +127,44 @@ const ModalWindow = ({isOpen, onClose, user}) => {
                         </ModalHeader>
 
                         <UserProfile>
-                            <Avatar src={user.image} alt={`${user.firstName} ${user.lastName}`} />
+                            <Avatar src={selectedUser.image} alt={`${selectedUser.firstName} ${selectedUser.lastName}`} />
                             <UserName>
-                                {user.lastName} {user.firstName} {user.middleName}
+                                {selectedUser.lastName} {selectedUser.firstName} {selectedUser.middleName}
                             </UserName>
-                            <UserAge>{user.age} лет</UserAge>
+                            <UserAge>{selectedUser.age} лет</UserAge>
                         </UserProfile>
 
                         <UserDetails>
                             <DetailItem>
                                 <DetailLabel>Телефон</DetailLabel>
-                                <DetailValue>{user.phone}</DetailValue>
+                                <DetailValue>{selectedUser.phone}</DetailValue>
                             </DetailItem>
 
                             <DetailItem>
                                 <DetailLabel>Email</DetailLabel>
-                                <DetailValue>{user.email}</DetailValue>
+                                <DetailValue>{selectedUser.email}</DetailValue>
                             </DetailItem>
 
                             <DetailItem>
                                 <DetailLabel>Адрес</DetailLabel>
                                 <DetailValue>
-                                {user.address.city}, {user.address.address}
+                                {selectedUser.address.city}, {selectedUser.address.address}
                                 </DetailValue>
                             </DetailItem>
 
                             <DetailItem>
                                 <DetailLabel>Страна</DetailLabel>
-                                <DetailValue>{user.address.country}</DetailValue>
+                                <DetailValue>{selectedUser.address.country}</DetailValue>
                             </DetailItem>
 
                             <DetailItem>
                                 <DetailLabel>Рост</DetailLabel>
-                                <DetailValue>{user.height} см</DetailValue>
+                                <DetailValue>{selectedUser.height} см</DetailValue>
                             </DetailItem>
 
                             <DetailItem>
                                 <DetailLabel>Вес</DetailLabel>
-                                <DetailValue>{user.weight} кг</DetailValue>
+                                <DetailValue>{selectedUser.weight} кг</DetailValue>
                             </DetailItem>
                         </UserDetails>
                     </ModalContainer>  : <div>Loading...</div>}

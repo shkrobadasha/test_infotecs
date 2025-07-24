@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { setUsers } from "../slices/userSlice"
+import { setSelectedUser, setOpenWindow } from "../slices/modalWindowSlice"
 import styled from 'styled-components'
 
-//нудно понять, куда запихивать modalWindow
-
+const URL = 'https://dummyjson.com/users'
 
 const MyTable = styled.table`
   width: 100%;
@@ -24,9 +26,15 @@ const Td = styled.td`
   padding: 8px;
 `
 
-const Table = ({hadleWindow}) => {
-    const [users, setUsers] = useState([])
-    const [isLoading, setLoading] = useState(false)
+const Table = () => {
+    const dispatch = useDispatch();
+    const currentUsers = useSelector(state => state.users.usersData)
+
+    const hadleWindow = (user) => {
+        dispatch(setSelectedUser(user));
+        dispatch(setOpenWindow(true));
+    }
+
     const [sortConfig, setSortConfig] = useState({sortByfirstName: 1, 
         sortBymiddleName: 1,
         sortBylastName: 1,
@@ -48,7 +56,6 @@ const Table = ({hadleWindow}) => {
                 url = `https://dummyjson.com/users?sortBy=${sortParametr}&order=asc`
                 break
             case 2: 
-            //desc
             url = `https://dummyjson.com/users?sortBy=${sortParametr}&order=desc`
             break
             default: 
@@ -58,38 +65,18 @@ const Table = ({hadleWindow}) => {
         
         try{
             const response = await fetch(url)
-            setLoading(true)
             if(!response.ok){
                 throw new Error(`HTTP error: ${response.status}`)
             }
             const sortData = await response.json()
-            setLoading(false)
-            setUsers(sortData.users)
+            dispatch(setUsers(sortData.users))
 
         } catch (error) {
             console.log(`Failed to complete the request: ${error.message}`)
         }
     }
 
-    const getUserData = async () => {
-
-        try {
-            const response = await fetch('https://dummyjson.com/users')
-            setLoading(true)
-            if(!response.ok) {
-                throw new Error(`HTTP error: ${response.status}`)
-            }
-            const data = await response.json()
-            setLoading(false)
-            setUsers(data.users)
-        } catch (error){
-            console.log(`Failed to complete the request: ${error.message}`)
-        }
-    }
-
-    useEffect(()=> {
-        getUserData()
-    }, [])
+    console.log(currentUsers)
 
     return (
         <TableWrapper>
@@ -108,7 +95,7 @@ const Table = ({hadleWindow}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map(user => (
+                    {currentUsers.map(user => (
                         <tr key={user.id} onClick = {() => hadleWindow(user)}>
                             <Td>{user.lastName}</Td>
                             <Td>{user.firstName}</Td>
