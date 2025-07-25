@@ -4,7 +4,6 @@ import { setUsers } from "../slices/userSlice"
 import { setSelectedUser, setOpenWindow } from "../slices/modalWindowSlice"
 import styled from 'styled-components'
 
-const URL = 'https://dummyjson.com/users'
 
 const MyTable = styled.table`
   width: 100%;
@@ -75,8 +74,6 @@ const Table = () => {
             console.log(`Failed to complete the request: ${error.message}`)
         }
     }
-
-    console.log(currentUsers)
 
     return (
         <TableWrapper>
